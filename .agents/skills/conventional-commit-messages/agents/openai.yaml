@@ -1,0 +1,4 @@
+interface:
+  display_name: "Conventional Commit Messages"
+  short_description: "Conventional Commits for this project"
+  default_prompt: "Use $conventional-commit-messages to draft a project-compliant commit message."
