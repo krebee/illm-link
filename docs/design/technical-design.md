@@ -1,15 +1,38 @@
-# iLLM Link 技術設計で決めること
+# iLLM Link 技術設計
 
 更新日: 2026-06-25
 
 ## 1. 文書の位置づけ
 
-本書は、iLLM Link の技術設計をいちから決め直すための論点一覧です。  
-ここでは仕様を確定せず、決定が必要な項目だけを整理します。
+本書は、iLLM Link の技術設計を定義します。
+
+設計初期段階では、各節に決定済み事項と未決事項を併記します。決定した内容は本文へ反映し、重要な判断やトレードオフは必要に応じて [decisions/](./decisions/) に ADR として記録します。
+
+未決事項は「検討事項」として残し、後続の設計判断に合わせて最終仕様へ更新します。
 
 ---
 
-## 2. 外部インターフェース
+## 2. 実装基盤
+
+iLLM Link は Rust で実装します。
+
+Rust を採用する理由は、小さいメモリ使用量、高い実行性能、Windows と Ubuntu Linux 向けの単一バイナリ配布、型安全性による設計境界の明確化を重視するためです。
+
+実装言語の選定理由と Go との比較は、[0001: 実装言語として Rust を採用する](./decisions/0001-runtime-language.md) を参照します。
+
+### 2.1 検討事項
+
+- async runtime の選定
+- HTTP server framework の選定
+- HTTP client library の選定
+- CLI framework の選定
+- 設定ファイル parser の選定
+- logging / tracing library の選定
+- error handling library の選定
+
+---
+
+## 3. 外部インターフェース
 
 - Codex から受け付ける API エンドポイント
 - 対応する OpenAI API 互換範囲
@@ -20,7 +43,7 @@
 
 ---
 
-## 3. Responses API 変換
+## 4. Responses API 変換
 
 - Responses API request から provider request への変換対象
 - `instructions` の扱い
@@ -38,7 +61,7 @@
 
 ---
 
-## 4. Streaming 変換
+## 5. Streaming 変換
 
 - provider stream から Responses API SSE への event mapping
 - 最小対応 event sequence
@@ -51,7 +74,7 @@
 
 ---
 
-## 5. ルーティング
+## 6. ルーティング
 
 - model 名から provider を決定する方法
 - 明示 provider prefix を採用するか
@@ -67,7 +90,7 @@
 
 ---
 
-## 6. Provider 抽象
+## 7. Provider 抽象
 
 - provider adapter の責務範囲
 - provider ごとの request builder の設計
@@ -80,7 +103,7 @@
 
 ---
 
-## 7. 認証・ヘッダー
+## 8. 認証・ヘッダー
 
 - Codex から受け取った認証情報を利用するか
 - OpenAI-auth proxy mode を実装するか
@@ -96,7 +119,7 @@
 
 ---
 
-## 8. 設定
+## 9. 設定
 
 - 設定ファイルの形式
 - 設定ファイルの配置場所
@@ -110,7 +133,7 @@
 
 ---
 
-## 9. タイムアウト・リトライ
+## 10. タイムアウト・リトライ
 
 - provider 接続 timeout
 - non-streaming request timeout
@@ -125,7 +148,7 @@
 
 ---
 
-## 10. エラーマッピング
+## 11. エラーマッピング
 
 - provider error から router error への正規化形式
 - HTTP status の決め方
@@ -142,7 +165,7 @@
 
 ---
 
-## 11. 状態管理
+## 12. 状態管理
 
 - `store` の扱い
 - `previous_response_id` の扱い
@@ -154,7 +177,7 @@
 
 ---
 
-## 12. 観測性
+## 13. 観測性
 
 - request id の採番方法
 - Codex request id / router request id / upstream request id の扱い
@@ -168,7 +191,7 @@
 
 ---
 
-## 13. セキュリティ
+## 14. セキュリティ
 
 - bind address の制限
 - localhost 以外で起動する場合の扱い
@@ -181,7 +204,7 @@
 
 ---
 
-## 14. テスト・検証
+## 15. テスト・検証
 
 - Codex App 接続テスト
 - Codex CLI 接続テスト
@@ -199,7 +222,7 @@
 
 ---
 
-## 15. 実装単位
+## 16. 実装単位
 
 - 最初に実装する最小スコープ
 - Phase 1 に含める provider
@@ -212,7 +235,7 @@
 
 ---
 
-## 16. ADR 化する判断
+## 17. ADR 化する判断
 
 - API 互換範囲
 - routing 方式
